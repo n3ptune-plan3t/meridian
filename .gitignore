@@ -1,0 +1,19 @@
+# Build artifacts
+zig-out/
+.zig-cache/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+core
+core.*
+*.dSYM/
