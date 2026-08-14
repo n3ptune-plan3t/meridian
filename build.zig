@@ -14,48 +14,49 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    const wayland_scan = b.findProgram(&.{"wayland-scanner"}, &.{});
+    const wayland_scan_path: []const u8 = b.findProgram(&.{"wayland-scanner"}, &.{}) catch |err| switch (err) {
+        error.FileNotFound => {
+            std.log.err("wayland-scanner not found, install wayland-protocols", .{});
+            return;
+        },
+    };
 
-    if (wayland_scan) |scan| {
-        const protocols = [_]struct { name: []const u8, xml: []const u8 }{
-            .{ .name = "wlr-layer-shell-unstable-v1", .xml = "wlr-layer-shell-unstable-v1" },
-            .{ .name = "xdg-shell", .xml = "xdg-shell" },
-            .{ .name = "ext-idle-notification-v1", .xml = "ext-idle-notification-v1" },
-        };
+    const protocols = [_]struct { name: []const u8, xml: []const u8 }{
+        .{ .name = "wlr-layer-shell-unstable-v1", .xml = "wlr-layer-shell-unstable-v1" },
+        .{ .name = "xdg-shell", .xml = "xdg-shell" },
+        .{ .name = "ext-idle-notification-v1", .xml = "ext-idle-notification-v1" },
+    };
 
-        const output_dir = b.path("src/generated");
-        std.fs.cwd().makeDir(output_dir.getPath()) catch {};
+    const output_dir = b.path("src/generated");
+    std.fs.cwd().makeDir(output_dir.getPath()) catch {};
 
-        for (protocols) |proto| {
-            const client_header = b.fmt("src/generated/{s}-client-protocol.h", .{proto.name});
-            const c_source = b.fmt("src/generated/{s}-client-protocol.c", .{proto.name});
+    for (protocols) |proto| {
+        const client_header = b.fmt("src/generated/{s}-client-protocol.h", .{proto.name});
+        const c_source = b.fmt("src/generated/{s}-client-protocol.c", .{proto.name});
 
-            const xml_path = b.fmt("/usr/share/wayland-protocols/{s}.xml", .{proto.xml});
+        const xml_path = b.fmt("/usr/share/wayland-protocols/{s}.xml", .{proto.xml});
 
-            _ = b.addSystemCommand(&.{
-                scan,
-                "client-header",
-                xml_path,
-                b.path(client_header).getPath(),
-            });
+        _ = b.addSystemCommand(&.{
+            wayland_scan_path,
+            "client-header",
+            xml_path,
+            b.path(client_header).getPath(),
+        });
 
-            _ = b.addSystemCommand(&.{
-                scan,
-                "private-code",
-                xml_path,
-                b.path(c_source).getPath(),
-            });
+        _ = b.addSystemCommand(&.{
+            wayland_scan_path,
+            "private-code",
+            xml_path,
+            b.path(c_source).getPath(),
+        });
 
-            exe.root_module.addCSourceFile(.{
-                .file = b.path(c_source),
-                .flags = &.{"-std=c11"},
-            });
-        }
-
-        exe.addIncludePath(b.path("src/generated"));
-    } else {
-        std.log.warn("wayland-scanner not found, protocol headers must be pre-generated", .{});
+        exe.root_module.addCSourceFile(.{
+            .file = b.path(c_source),
+            .flags = &.{"-std=c11"},
+        });
     }
+
+    exe.addIncludePath(b.path("src/generated"));
 
     exe.linkSystemLibrary("wayland-client");
     exe.linkSystemLibrary("wayland-protocols");
