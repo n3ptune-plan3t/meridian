@@ -1,6 +1,7 @@
 .{
     .name = .meridian,
     .version = "0.1.0",
+    .fingerprint = 0x2436f5874c81ff,
     .minimum_zig_version = "0.16.0",
     .paths = .{
         "build.zig",
