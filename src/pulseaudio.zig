@@ -1,6 +1,5 @@
 const std = @import("std");
 const posix = std.posix;
-const linux = std.os.linux;
 const Allocator = std.mem.Allocator;
 
 const log = std.log.scoped(.pulseaudio);
@@ -91,10 +90,8 @@ pub const PulseAudioClient = struct {
         while (lines.next()) |line| {
             if (std.mem.startsWith(u8, line, "EVENT ")) {
                 self.processEvent(line);
-            } else if (std.mem.startsWith(u8, line, "BEGIN ")) {
             } else if (std.mem.startsWith(u8, line, "CHANGE ")) {
                 self.processChange(line);
-            } else if (std.mem.startsWith(u8, line, "REMOVE ")) {
             } else if (std.mem.startsWith(u8, line, "OK ")) {
                 self.processOk(line);
             }
