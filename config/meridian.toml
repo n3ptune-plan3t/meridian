@@ -1,0 +1,84 @@
+# Meridian - A lightweight Wayland shell for niri
+# Configuration file
+
+[bar]
+# Position: top, bottom, left, right
+position = "top"
+# Height in pixels
+height = 32
+# Exclusive zone (space reserved for bar)
+exclusive_zone = 32
+# Background color (ARGB hex)
+background = "#1A1B26"
+# Foreground/text color (ARGB hex)
+foreground = "#C0CAF5"
+# Font size in pixels
+font_size = 13
+# Padding around widgets
+padding = 8
+
+[widgets]
+# Widgets to show on left side
+left = ["workspaces"]
+# Widgets to show in center
+center = ["clock"]
+# Widgets to show on right side
+right = ["battery", "volume", "network"]
+
+[widgets.clock]
+# Time format (strftime-like)
+format = "%H:%M"
+# Update interval in milliseconds
+interval = 1000
+
+[widgets.battery]
+# Battery device name
+bat = "BAT0"
+# Update interval in seconds
+interval = 30
+
+[widgets.volume]
+# PulseAudio sink name
+sink = "@DEFAULT_SINK@"
+# Update interval in seconds
+interval = 2
+
+[widgets.network]
+# Network interface name
+interface = "wlan0"
+# Update interval in seconds
+interval = 5
+
+[notifications]
+# Position: top-right, top-left, bottom-right, bottom-left
+position = "top-right"
+# Width in pixels
+width = 300
+# Height in pixels
+height = 100
+# Timeout in milliseconds
+timeout = 5000
+# Background color
+background = "#1A1B26"
+# Text color
+foreground = "#C0CAF5"
+# Border color
+border = "#7AA2F7"
+
+[launcher]
+# Width in pixels
+width = 600
+# Height in pixels
+height = 400
+# Background color
+background = "#1A1B26"
+# Text color
+foreground = "#C0CAF5"
+# Border color
+border = "#7AA2F7"
+
+[wallpaper]
+# Path to wallpaper image
+path = ""
+# Mode: fill, fit, stretch, center, tile
+mode = "fill"
