@@ -14,7 +14,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    const wayland_scan = b.findProgram("wayland-scanner", &.{});
+    const wayland_scan = b.findProgram(&.{"wayland-scanner"}, &.{});
 
     if (wayland_scan) |scan| {
         const protocols = [_]struct { name: []const u8, xml: []const u8 }{
