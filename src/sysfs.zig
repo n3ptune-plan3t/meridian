@@ -88,7 +88,7 @@ pub const InotifyWatcher = struct {
         }
     }
 
-    pub fn deinit(self: *InotifyWatcher) var {
+    pub fn deinit(self: *InotifyWatcher) void {
         var iter = self.watches.iterator();
         while (iter.next()) |kv| {
             self.allocator.free(kv.value.path);
